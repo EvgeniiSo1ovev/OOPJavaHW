@@ -1,9 +1,11 @@
 package person;
 
+import member.Member;
+
 import java.io.Serializable;
 import java.util.*;
 
-public class Person implements Serializable, Comparable<Person> {
+public class Person implements Member {
     private String firstName;
     private String lastName;
     private boolean isMan;

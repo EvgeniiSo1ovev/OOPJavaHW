@@ -1,5 +1,6 @@
 package familyTree;
 
+import member.Member;
 import person.Person;
 
 import java.io.Serializable;
@@ -7,7 +8,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class FamilyTree<E extends Person> implements Serializable, FTree<E> {
+public class FamilyTree<E extends Member> implements Serializable, FTree<E> {
     private String name;
     private List<E> persons;
 
