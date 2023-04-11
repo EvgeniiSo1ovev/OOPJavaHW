@@ -1,12 +1,11 @@
 package familyTree;
 
-import member.Member;
-import person.Person;
+import member.MemberInterface;
 
 import java.util.List;
 
-public interface FTree<E extends Member> extends Iterable<E> {
-    void addPerson(E person);
+public interface FTree<E extends MemberInterface> extends Iterable<E> {
+    void addMember(E member);
 
-    List<E> getPersonsList();
+    List<E> getMembersList();
 }

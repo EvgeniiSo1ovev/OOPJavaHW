@@ -2,63 +2,37 @@ package person;
 
 import member.Member;
 
-import java.io.Serializable;
 import java.util.*;
 
-public class Person implements Member {
-    private String firstName;
-    private String lastName;
-    private boolean isMan;
-    private Calendar bornDate;
+public class Person extends Member {
     private Map<Person, Boolean> married;
-    private List<Person> children;
-    private List<Person> parents;
 
-    public Person(String firstName, String lastName, boolean isMan) {
-        this(firstName, lastName, isMan, new GregorianCalendar());
-    }
-
-    public Person(String firstName, String lastName, boolean isMan, Calendar bornDate) {
-        this(firstName, lastName, isMan, bornDate, new HashMap<>(), new ArrayList<>(), new ArrayList<>());
+    public Person(String firstName, String lastName, boolean gender, Calendar bornDate) {
+        this(firstName, lastName, gender, bornDate, new HashMap<>(), new ArrayList<>(), new ArrayList<>());
     }
 
     public Person(Person person) {
-        this(person.firstName, person.lastName, person.isMan, person.bornDate, person.married, person.children, person.parents);
+        this(person.name, person.gender, person.bornDate, person.married, person.children, person.parents);
         this.updateLinks();
     }
 
-    private Person(String firstName, String lastName, boolean isMan, Calendar bornDate, Map<Person, Boolean> married, List<Person> children, List<Person> parents) {
-        this.setName(firstName, lastName);
-        this.isMan = isMan;
-        this.married = married;
-        this.bornDate = bornDate;
-        this.children = children;
-        this.parents = parents;
-    }
-
-    public void setName(String firstName, String lastName) {
-        this.setFirstName(firstName);
+    private Person(String firstName, boolean gender, Calendar bornDate, Map<Person, Boolean> married, List<? extends Member> children, List<? extends Member> parents) {
+        super(firstName, gender, bornDate, children, parents);
         this.setLastName(lastName);
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
+        this.married = married;
     }
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
     }
 
-    public String getFirstName() {
-        return this.firstName;
-    }
-
     public String getLastName() {
         return this.lastName;
     }
 
+    @Override
     public String getName() {
-        return this.getFirstName() + " " + this.getLastName();
+        return super.getName() + " " + this.getLastName();
     }
 
     public Calendar getBornDate() {
@@ -66,21 +40,21 @@ public class Person implements Member {
     }
 
     public Boolean getGender() {
-        return this.isMan;
+        return this.gender;
     }
 
-    public List<Person> getChildren() {
+    /*public List<Person> getChildren() {
         return this.children;
     }
 
     public List<Person> getParents() {
         return this.parents;
-    }
+    }*/
 
     public Person getMarried() {
         if (this.married.containsValue(true)) {
             for (Map.Entry<Person, Boolean> entry : this.married.entrySet())
-                if (entry.getValue()) return entry.getKey();
+                if (entry.getValue()) return (Person) entry.getKey();
         }
         return null;
     }
@@ -89,41 +63,6 @@ public class Person implements Member {
         if (!this.hasMarried(married)) {
             this.married.put(married, isMarried);
             married.addMarried(this, isMarried);
-        }
-    }
-
-    public void addChild(Person child) {
-        if (!this.hasChild(child)) {
-            this.children.add(child);
-            child.addParent(this);
-        }
-    }
-
-    public void addParent(Person parent) {
-        if (!this.hasParent(parent)) {
-            this.parents.add(parent);
-            parent.addChild(this);
-        }
-    }
-
-    public void updateLinks() {
-        this.updateChildren();
-        this.updateParents();
-    }
-
-    private void updateChildren() {
-        if (this.countChildren() > 0) {
-            for (Person person : this.children) {
-                person.addParent(this);
-            }
-        }
-    }
-
-    private void updateParents() {
-        if (this.countParents() > 0) {
-            for (Person person : this.parents) {
-                person.addChild(this);
-            }
         }
     }
 
@@ -139,46 +78,34 @@ public class Person implements Member {
         return this.married.containsKey(married);
     }
 
-    public boolean hasChild(Person child) {
-        return this.children.contains(child);
-    }
-
-    private boolean hasParent(Person parent) {
-        return this.parents.contains(parent);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Person person = (Person) o;
-        return isMan == person.isMan && Objects.equals(firstName, person.firstName) && Objects.equals(lastName, person.lastName) && Objects.equals(bornDate, person.bornDate);
-    }
+//    public boolean hasChild(Person child) {
+//        return this.children.contains(child);
+//    }
+//
+//    private boolean hasParent(Person parent) {
+//        return this.parents.contains(parent);
+//    }
 
     @Override
     public int hashCode() {
-        return Objects.hash(firstName, lastName, isMan, bornDate);
-    }
-
-    public String toString() {
-        return this.getName();
+        return Objects.hash(name, lastName, gender, bornDate);
     }
 
     public String toStringBornDate() {
         return this.toString() + " " + this.getBornDate();
     }
 
-    public int compareTo(Person p) {
-        int result = this.getFirstName().compareTo(p.getFirstName());
-        if (result == 0) result = this.getLastName().compareTo(p.getLastName());
-        if (result == 0) {
-            /*if (this.bornDate.after(p.bornDate)) {
-                result = 1;
-            } else if (this.bornDate.before(p.bornDate)) {
-                result = -1;
-            }*/
-            result = this.getBornDate().compareTo(p.getBornDate());
-        }
-        return result;
-    }
+//    public int compareTo(Person m) {
+//        int result = this.getFirstName().compareTo(m.getFirstName());
+//        if (result == 0) result = this.getLastName().compareTo(m.getLastName());
+//        if (result == 0) {
+//            /*if (this.bornDate.after(p.bornDate)) {
+//                result = 1;
+//            } else if (this.bornDate.before(p.bornDate)) {
+//                result = -1;
+//            }*/
+//            result = this.getBornDate().compareTo(m.getBornDate());
+//        }
+//        return result;
+//    }
 }

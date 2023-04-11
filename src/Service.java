@@ -1,9 +1,9 @@
 import familyTree.FamilyTree;
-import familyTree.comparators.PersonComparatorByBornDate;
-import familyTree.comparators.PersonComparatorByFirstName;
-import familyTree.comparators.PersonComparatorByGender;
-import familyTree.comparators.PersonComparatorByLastName;
+import familyTree.comparators.MemberComparatorByBornDate;
+import familyTree.comparators.MemberComparatorByFirstName;
+import familyTree.comparators.MemberComparatorByGender;
 import handler.FileHandler;
+import member.Member;
 import person.Person;
 import trees.TOTrees;
 import trees.TreeOfTrees;
@@ -19,58 +19,58 @@ public class Service {
         this.treeOfTrees = treeOfTrees;
     }
 
-    public void addFamilyTree(String newName){
+    public void addFamilyTree(String newName) {
         this.treeOfTrees.addFamilyTree(new FamilyTree<>(newName));
     }
 
-    public void addFamilyTree(Person person){
-        this.treeOfTrees.addFamilyTree(new FamilyTree<>(person));
+    public void addFamilyTree(Member member) {
+        this.treeOfTrees.addFamilyTree(new FamilyTree<>(member));
     }
 
-    public void addFamilyTree(FamilyTree<Person> familyTree){
+    public void addFamilyTree(FamilyTree<Member> familyTree) {
         this.treeOfTrees.addFamilyTree(familyTree);
     }
 
-    public void addPerson(Person person) {
-        for (FamilyTree<Person> familyTree : treeOfTrees){
-            addPerson(familyTree, person);
+    public void addMember(Member member) {
+        for (FamilyTree<Member> familyTree : treeOfTrees) {
+            addMember(familyTree, member);
         }
     }
 
-    public void addPerson(String familyTreeName, Person person) {
-        addPerson(this.findFamilyTree(familyTreeName), person);
+    public void addMember(String familyTreeName, Member member) {
+        addMember(this.findFamilyTree(familyTreeName), member);
     }
 
-    private void addPerson(FamilyTree<Person> familyTree, Person person) {
-        familyTree.addPerson(person);
+    private void addMember(FamilyTree<Member> familyTree, Member member) {
+        familyTree.addMember(member);
     }
 
-    public void addPerson(String firstName, String lastName, boolean isMan) {
-        addPerson(firstName, lastName, isMan, new GregorianCalendar());
+    public void addMember(String firstName, String lastName, boolean isMan) {
+        addMember(firstName, lastName, isMan, new GregorianCalendar());
     }
 
-    public void addPerson(String firstName, String lastName, boolean isMan, Calendar bornDate){
-        for (FamilyTree<Person> familyTree : treeOfTrees){
-            addPerson(familyTree, firstName, lastName, isMan, bornDate);
+    public void addMember(String firstName, String lastName, boolean isMan, Calendar bornDate) {
+        for (FamilyTree<Member> familyTree : treeOfTrees) {
+            addMember(familyTree, firstName, lastName, isMan, bornDate);
         }
     }
 
     public void addPerson(String familyTreeName, String firstName, String lastName, boolean isMan) {
-        addPerson(familyTreeName, firstName, lastName, isMan, new GregorianCalendar());
+        addMember(familyTreeName, firstName, lastName, isMan, new GregorianCalendar());
     }
 
     public void addPerson(String familyTreeName, String firstName, String lastName, boolean isMan, Calendar bornDate) {
         addPerson(this.findFamilyTree(familyTreeName), firstName, lastName, isMan, bornDate);
     }
 
-    private Person addPerson(FamilyTree<Person> familyTree, String firstName, String lastName, boolean isMan, Calendar bornDate) {
-        Person person = new Person(firstName, lastName, isMan, bornDate);
-        familyTree.addPerson(person);
-        return person;
+    private Member addPerson(FamilyTree<Member> familyTree, String firstName, String lastName, boolean isMan, Calendar bornDate) {
+        Member member = new Person(firstName, lastName, isMan, bornDate);
+        familyTree.addMember(member);
+        return member;
     }
 
-    public void addPerson(String firstName, String firstNameSample){
-        for (FamilyTree<Person> familyTree : treeOfTrees){
+    public void addPerson(String firstName, String firstNameSample) {
+        for (FamilyTree<Member> familyTree : treeOfTrees) {
             addPerson(familyTree, firstName, firstNameSample);
         }
     }
@@ -79,28 +79,28 @@ public class Service {
         addPerson(this.findFamilyTree(familyTreeName), firstName, firstNameSample);
     }
 
-    private void addPerson(FamilyTree<Person> familyTree, String firstName, String firstNameSample) {
-        Person person = new Person(familyTree.findPerson(firstNameSample));
-        person.setFirstName(firstName);
-        familyTree.addPerson(person);
+    private void addPerson(FamilyTree<Member> familyTree, String firstName, String firstNameSample) {
+        Member member = new Person((Person) findMember(familyTree, firstNameSample));
+        member.setName(firstName);
+        familyTree.addMember(member);
     }
 
     public void addChild(String firstNameParent, String firstNameChild, String lastNameChild, boolean isMan) {
         addChild(firstNameParent, firstNameChild, lastNameChild, isMan, new GregorianCalendar());
     }
 
-    public void addChild(String firstNameParent, String firstNameChild, String lastNameChild, boolean isMan, Calendar bornDate){
-        for (FamilyTree<Person> familyTree : treeOfTrees){
+    public void addChild(String firstNameParent, String firstNameChild, String lastNameChild, boolean isMan, Calendar bornDate) {
+        for (FamilyTree<Member> familyTree : treeOfTrees) {
             addChild(familyTree, firstNameParent, firstNameChild, lastNameChild, isMan, bornDate);
         }
     }
 
-    private void addChild(FamilyTree<Person> familyTree, String firstNameParent, String firstNameChild, String lastNameChild, boolean isMan, Calendar bornDate) {
-        familyTree.findPerson(firstNameParent).addChild(this.addPerson(familyTree, firstNameChild, lastNameChild, isMan, bornDate));
+    private void addChild(FamilyTree<Member> familyTree, String firstNameParent, String firstNameChild, String lastNameChild, boolean isMan, Calendar bornDate) {
+        findMember(familyTree, firstNameParent).addChild(this.addMember(familyTree, firstNameChild, lastNameChild, isMan, bornDate));
     }
 
-    public void addChild(String firstNameParent, String firstNameChild){
-        for (FamilyTree<Person> familyTree : treeOfTrees){
+    public void addChild(String firstNameParent, String firstNameChild) {
+        for (FamilyTree<Member> familyTree : treeOfTrees) {
             addChild(familyTree, firstNameParent, firstNameChild);
         }
     }
@@ -109,12 +109,12 @@ public class Service {
         addChild(this.findFamilyTree(familyTreeName), firstNameParent, firstNameChild);
     }
 
-    private void addChild(FamilyTree<Person> familyTree, String firstNameParent, String firstNameChild) {
-        familyTree.findPerson(firstNameParent).addChild(familyTree.findPerson(firstNameChild));
+    private void addChild(FamilyTree<Member> familyTree, String firstNameParent, String firstNameChild) {
+        familyTree.findMember(firstNameParent).addChild(familyTree.findMember(firstNameChild));
     }
 
     public void addMarried(String firstNameMarried1, String firstNameMarried2, boolean isMarried) {
-        for (FamilyTree<Person> familyTree : treeOfTrees){
+        for (FamilyTree<Member> familyTree : treeOfTrees) {
             addMarried(familyTree, firstNameMarried1, firstNameMarried2, isMarried);
         }
     }
@@ -124,22 +124,26 @@ public class Service {
     }
 
     private void addMarried(FamilyTree<Person> familyTree, String firstNameMarried1, String firstNameMarried2, boolean isMarried) {
-        familyTree.findPerson(firstNameMarried1).addMarried(familyTree.findPerson(firstNameMarried2), isMarried);
+        findMember(familyTree, firstNameMarried1).addMarried(findMember(familyTree, firstNameMarried2), isMarried);
     }
 
-    public FamilyTree<Person> findFamilyTree(String name){
+    public FamilyTree<Member> findFamilyTree(String name) {
         return this.treeOfTrees.findFamilyTree(name);
     }
 
-    public Person findPerson(String firstName){
-        for (FamilyTree<Person> familyTree : treeOfTrees){
-            return familyTree.findPerson(firstName);
+    public Member findMember(String firstName) {
+        for (FamilyTree<Member> familyTree : treeOfTrees) {
+            return findMember(familyTree, firstName);
         }
         return null;
     }
 
+    private Member findMember(FamilyTree<Member> familyTree, String firstName) {
+        return familyTree.findMember(firstName);
+    }
+
     public void sortByFirstName() {
-        for (FamilyTree<Person> familyTree : treeOfTrees) {
+        for (FamilyTree<Member> familyTree : treeOfTrees) {
             this.sortByFirstName(familyTree);
         }
     }
@@ -148,17 +152,17 @@ public class Service {
         this.sortByFirstName(this.findFamilyTree(familyTreeName));
     }
 
-    private void sortByFirstName(FamilyTree<Person> familyTree) {
-        List<Person> persons = familyTree.getPersonsList();
-        persons.sort(new PersonComparatorByFirstName<>());
-        for (person.Person person : persons) {
-            person.getChildren().sort(new PersonComparatorByFirstName<>());
-            person.getParents().sort(new PersonComparatorByFirstName<>());
+    private void sortByFirstName(FamilyTree<Member> familyTree) {
+        List<Member> members = familyTree.getMembersList();
+        members.sort(new MemberComparatorByFirstName<>());
+        for (Member member : members) {
+            member.getChildren().sort(new MemberComparatorByFirstName<>());
+            member.getParents().sort(new MemberComparatorByFirstName<>());
         }
     }
 
     public void sortByLastName() {
-        for (FamilyTree<Person> familyTree : treeOfTrees) {
+        for (FamilyTree<Member> familyTree : treeOfTrees) {
             this.sortByLastName(familyTree);
         }
     }
@@ -167,17 +171,17 @@ public class Service {
         this.sortByLastName(this.findFamilyTree(familyTreeName));
     }
 
-    private void sortByLastName(FamilyTree<Person> familyTree) {
-        List<Person> persons = familyTree.getPersonsList();
-        persons.sort(new PersonComparatorByLastName<>());
-        for (person.Person person : persons) {
-            person.getChildren().sort(new PersonComparatorByLastName<>());
-            person.getParents().sort(new PersonComparatorByLastName<>());
+    private void sortByLastName(FamilyTree<Member> familyTree) {
+        List<Member> members = familyTree.getMembersList();
+        members.sort(new MemberComparatorByLastName<>());
+        for (Member member : members) {
+            member.getChildren().sort(new MemberComparatorByLastName<>());
+            member.getParents().sort(new MemberComparatorByLastName<>());
         }
     }
 
     public void sortByGender() {
-        for (FamilyTree<Person> familyTree : treeOfTrees) {
+        for (FamilyTree<Member> familyTree : treeOfTrees) {
             this.sortByGender(familyTree);
         }
     }
@@ -186,17 +190,17 @@ public class Service {
         this.sortByGender(this.findFamilyTree(familyTreeName));
     }
 
-    private void sortByGender(FamilyTree<Person> familyTree) {
-        List<Person> persons = familyTree.getPersonsList();
-        persons.sort(new PersonComparatorByGender<>());
-        for (person.Person person : persons) {
-            person.getChildren().sort(new PersonComparatorByGender<>());
-            person.getParents().sort(new PersonComparatorByGender<>());
+    private void sortByGender(FamilyTree<Member> familyTree) {
+        List<Member> members = familyTree.getMembersList();
+        members.sort(new MemberComparatorByGender<>());
+        for (Member member : members) {
+            member.getChildren().sort(new MemberComparatorByGender<>());
+            member.getParents().sort(new MemberComparatorByGender<>());
         }
     }
 
     public void sortByBornDate() {
-        for (FamilyTree<Person> familyTree : treeOfTrees) {
+        for (FamilyTree<Member> familyTree : treeOfTrees) {
             this.sortByBornDate(familyTree);
         }
     }
@@ -205,12 +209,12 @@ public class Service {
         this.sortByBornDate(this.findFamilyTree(familyTreeName));
     }
 
-    private void sortByBornDate(FamilyTree<Person> familyTree) {
-        List<Person> persons = familyTree.getPersonsList();
-        persons.sort(new PersonComparatorByBornDate<>());
-        for (person.Person person : persons) {
-            person.getChildren().sort(new PersonComparatorByBornDate<>());
-            person.getParents().sort(new PersonComparatorByBornDate<>());
+    private void sortByBornDate(FamilyTree<Member> familyTree) {
+        List<Member> members = familyTree.getMembersList();
+        members.sort(new MemberComparatorByBornDate<>());
+        for (Member member : members) {
+            member.getChildren().sort(new MemberComparatorByBornDate<>());
+            member.getParents().sort(new MemberComparatorByBornDate<>());
         }
     }
 

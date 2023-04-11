@@ -1,3 +1,4 @@
+import person.Person;
 import trees.TOTrees;
 import trees.TreeOfTrees;
 import familyTree.FamilyTree;
@@ -32,11 +33,11 @@ public class Main {
 
 
         service.addPerson("Smith", "Laura", "Smith", false, new GregorianCalendar(1997, 11, 15));
-        service.addPerson("Smith", service.findPerson("Pavel"));
+        service.addPerson("Smith", (Person) service.findMember("Pavel"));
         service.addChild("Smith", "Laura", "Pavel");
 
         //service.addPerson("Geller", service.findPerson("Laura"));
-        service.addPerson("Smith", service.findPerson("Misha"));
+        service.addPerson("Smith", service.findMember("Misha"));
         //service.addMarried("Laura", "Misha", true);
 
         service.printInfo();
